@@ -1,0 +1,25 @@
+{
+  "name": "wa2txt",
+  "version": "1.0.0",
+  "description": "Translate whatsapp audio messages to text",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/azubkokshe/wa2txt"
+  },
+  "keywords": [
+    "whatsapp",
+    "audio",
+    "messages",
+    "text"
+  ],
+  "author": "Zub Alexandr",
+  "license": "MIT",
+  "dependencies": {
+    "node-telegram-bot-api": "^0.50.0",
+    "ws": "^7.4.0"
+  }
+}
