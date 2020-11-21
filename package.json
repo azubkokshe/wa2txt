@@ -1,10 +1,10 @@
 {
   "name": "wa2txt",
   "version": "1.0.0",
-  "description": "Translate whatsapp audio messages to text",
+  "description": "Translate whatsapp/telegram audio messages to text",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
@@ -12,6 +12,7 @@
   },
   "keywords": [
     "whatsapp",
+    "telegram",
     "audio",
     "messages",
     "text"

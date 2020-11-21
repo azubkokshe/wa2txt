@@ -4,8 +4,9 @@ const fs = require('fs');
 const TelegramBot = require('node-telegram-bot-api');
 
 const AUDIO_PATH = './temp/';
-const WS_URL = 'ws://localhost:2700';
-const token = '1232315567:AAG8dC328VNRVnCAXMnfAG8_K5MO0TED9nQ';
+const WS_URL = process.env.WS_URL;
+const token = process.env.TG_TOKEN;
+
 const bot = new TelegramBot(token, { polling: true });
 
 if (!fs.existsSync(AUDIO_PATH)) fs.mkdirSync(AUDIO_PATH);
@@ -75,8 +76,6 @@ function getText(inputFileName, success) {
 
 bot.on('message', (msg) => {
     const chatId = msg.chat.id;
-    console.log('Audio: ' + JSON.stringify(msg.audio));
-
     if (msg.audio || msg.voice) {
         let audioObj = msg.audio || msg.voice;
         bot.sendChatAction(chatId, 'typing');
