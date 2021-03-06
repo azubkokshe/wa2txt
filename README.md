@@ -1,10 +1,13 @@
 # Telegram bot for converterting WhatsApp / Telegram audio messages to text 
 
-**1. Create an user-defined bridge network**<br/>
+**1. Create your own telegram bot<br/>**
+[botfather](https://t.me/botfather)
+
+**2. Create an user-defined bridge network**<br/>
 docker network create wa2txt
 
-**2. Run Kaldi**<br/>
+**3. Run Kaldi**<br/>
 docker run --network=wa2txt -p 2700:2700 --name kaldi -d alphacep/kaldi-ru:latest
 
-**3. Run telegram bot**<br/>
+**4. Run telegram bot**<br/>
 docker run --restart=always --network=wa2txt -e TG_TOKEN={token} -e WS_URL=ws://kaldi:2700 --name wa2txt -d zzzubalex/wa2txt:latest
