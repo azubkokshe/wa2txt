@@ -5,8 +5,8 @@ const TelegramBot = require('node-telegram-bot-api');
 const uuid = require('uuid-random');
 
 const AUDIO_PATH = './temp/';
-const WS_URL = process.env.WS_URL;
-const token = process.env.TG_TOKEN;
+let WS_URL = process.env.WS_URL;
+let token = process.env.TG_TOKEN;
 
 const bot = new TelegramBot(token, { polling: true });
 
@@ -88,7 +88,10 @@ bot.on('message', (msg) => {
                 getText(fileName, function (text) {
                     fs.unlinkSync(fileName);
                     fs.rmdirSync(uPath, { recursive: true });
-                    bot.sendMessage(chatId, text);
+                    if (!text.trim())
+                        bot.sendMessage(chatId, 'К сожалению я не смог ни чего разобрать в этой аудио записи');
+                    else
+                        bot.sendMessage(chatId, text);
                 })
             }, function (fileName) {
                 fs.unlink(fileName, function () {
