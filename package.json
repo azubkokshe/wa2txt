@@ -22,5 +22,8 @@
   "dependencies": {
     "node-telegram-bot-api": "^0.50.0",
     "ws": "^7.4.0"
+  },
+  "devDependencies": {
+    "uuid-random": "^1.3.2"
   }
 }
