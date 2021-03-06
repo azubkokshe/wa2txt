@@ -10,7 +10,7 @@ docker network create wa2txt
 
 **3. Run Kaldi**<br/>
 ```bash
-docker run --network=wa2txt -p 2700:2700 --name kaldi -d alphacep/kaldi-ru:latest
+docker run --restart=always --network=wa2txt -p 2700:2700 --name kaldi -d alphacep/kaldi-ru:latest
 ```
 
 **4. Run telegram bot**<br/>
