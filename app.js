@@ -2,6 +2,7 @@ const { spawn } = require('child_process');
 const websocket = require('ws');
 const fs = require('fs');
 const TelegramBot = require('node-telegram-bot-api');
+const uuid = require('uuid-random');
 
 const AUDIO_PATH = './temp/';
 const WS_URL = process.env.WS_URL;
@@ -79,15 +80,19 @@ bot.on('message', (msg) => {
     if (msg.audio || msg.voice) {
         let audioObj = msg.audio || msg.voice;
         bot.sendChatAction(chatId, 'typing');
-        bot.downloadFile(audioObj.file_id, AUDIO_PATH).then(function(url) {
+        let uPath =  AUDIO_PATH + "/" + uuid();
+        if (!fs.existsSync(uPath)) fs.mkdirSync(uPath);
+        bot.downloadFile(audioObj.file_id, uPath).then(function(url) {
             let inputFileName = url;
             getWAAudio(inputFileName, function (fileName) {
                 getText(fileName, function (text) {
                     fs.unlinkSync(fileName);
+                    fs.rmdirSync(uPath, { recursive: true });
                     bot.sendMessage(chatId, text);
                 })
             }, function (fileName) {
                 fs.unlink(fileName, function () {
+                    fs.rmdirSync(uPath, { recursive: true });
                     bot.sendMessage(chatId, 'К сожалению произошла ошибка');
                     return;
                 })
