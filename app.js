@@ -9,7 +9,7 @@ const rimraf = require("rimraf");
 const AUDIO_PATH = './temp/';
 let WS_URL = process.env.WS_URL;
 let token = process.env.TG_TOKEN;
-let statEMail = process.env.STAT_EMAIL;
+let noticeEMail = process.env.NOTICE_EMAIL;
 
 const bot = new TelegramBot(token, { polling: true });
 
@@ -27,13 +27,13 @@ let transporter = nodemailer.createTransport({
 });
 
 function sendStat(text) {
-    if (!statEMail) {
+    if (!noticeEMail) {
         return;
     }
 
     let mailOptions = {
         from: 'wa2txtbot@gmail.com',
-        to: statEMail,
+        to: noticeEMail,
         subject: 'Бот wa2txt',
         text: text
     };
