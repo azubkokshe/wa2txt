@@ -15,7 +15,7 @@ docker run --restart=always --network=wa2txt -p 2700:2700 --name kaldi -d alphac
 
 **4. Run telegram bot**<br/>
 ```bash
-docker run --restart=always --network=wa2txt -e TG_TOKEN={token} -e WS_URL=ws://kaldi:2700 --name wa2txt -d zzzubalex/wa2txt:latest
+docker run --restart=always --network=wa2txt -e TG_TOKEN={token} -e NOTICE_EMAIL={your_email_for_notice} -e WS_URL=ws://kaldi:2700 --name wa2txt -d zzzubalex/wa2txt:latest
 ```
 
 _change {token} to your token without '{}'_
