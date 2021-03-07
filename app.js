@@ -3,14 +3,49 @@ const websocket = require('ws');
 const fs = require('fs');
 const TelegramBot = require('node-telegram-bot-api');
 const uuid = require('uuid-random');
+const nodemailer = require('nodemailer');
+const rimraf = require("rimraf");
 
 const AUDIO_PATH = './temp/';
 let WS_URL = process.env.WS_URL;
 let token = process.env.TG_TOKEN;
+let statEMail = process.env.STAT_EMAIL;
 
 const bot = new TelegramBot(token, { polling: true });
 
+//Почистим диру после старта от возможного мусора
+if (fs.existsSync(AUDIO_PATH)) rimraf.sync(AUDIO_PATH);
+
 if (!fs.existsSync(AUDIO_PATH)) fs.mkdirSync(AUDIO_PATH);
+
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'wa2txtbot@gmail.com',
+        pass: 'wa2txt2021'
+    }
+});
+
+function sendStat(text) {
+    if (!statEMail) {
+        return;
+    }
+
+    let mailOptions = {
+        from: 'wa2txtbot@gmail.com',
+        to: statEMail,
+        subject: 'Бот wa2txt',
+        text: text
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
+}
 
 function getWAAudio(id, success, error) {
     let outputFile = id + '.wav';
@@ -87,15 +122,19 @@ bot.on('message', (msg) => {
             getWAAudio(inputFileName, function (fileName) {
                 getText(fileName, function (text) {
                     fs.unlinkSync(fileName);
-                    fs.rmdirSync(uPath, { recursive: true });
-                    if (!text.trim())
+                    rimraf.sync(uPath);
+
+                    sendStat('Кто то воспользовался ботом :)');
+
+                    if (!text.trim()) {
                         bot.sendMessage(chatId, 'К сожалению я не смог ни чего разобрать в этой аудио записи');
-                    else
+                    } else {
                         bot.sendMessage(chatId, text);
+                    }
                 })
             }, function (fileName) {
                 fs.unlink(fileName, function () {
-                    fs.rmdirSync(uPath, { recursive: true });
+                    rimraf.sync(uPath);
                     bot.sendMessage(chatId, 'К сожалению произошла ошибка');
                     return;
                 })
