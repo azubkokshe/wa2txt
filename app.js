@@ -102,11 +102,21 @@ function getText(inputFileName, success) {
         data = JSON.parse(data);
         if ('text' in data) {
             result += ' ' + data.text;
+
+            if (result.length >= 4000) {
+                let idx = result.lastIndexOf(' ', 4000);
+
+                if (idx > 0) {
+                    let chunk = result.substring(0, idx);
+                    result = result.substring(idx+1, result.length);
+                    if (chunk) success(result);
+                }
+            }
         }
     });
 
     ws.on('close', function close() {
-        success(result);
+        if (result) success(result);
     });
 }
 
@@ -120,11 +130,13 @@ bot.on('message', (msg) => {
         bot.downloadFile(audioObj.file_id, uPath).then(function(url) {
             let inputFileName = url;
             getWAAudio(inputFileName, function (fileName) {
+
+                sendStat('Кто то воспользовался ботом :)');
+
                 getText(fileName, function (text) {
                     fs.unlinkSync(fileName);
                     rimraf.sync(uPath);
 
-                    sendStat('Кто то воспользовался ботом :)');
 
                     if (!text.trim()) {
                         bot.sendMessage(chatId, 'К сожалению я не смог ни чего разобрать в этой аудио записи');
