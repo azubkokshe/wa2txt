@@ -5,8 +5,8 @@ const TelegramBot = require('node-telegram-bot-api');
 const uuid = require('uuid-random');
 const nodemailer = require('nodemailer');
 const rimraf = require("rimraf");
-
 const AUDIO_PATH = './temp/';
+
 let WS_URL = process.env.WS_URL;
 let token = process.env.TG_TOKEN;
 let noticeEMail = process.env.NOTICE_EMAIL;
@@ -102,21 +102,21 @@ function getText(inputFileName, success) {
         data = JSON.parse(data);
         if ('text' in data) {
             result += ' ' + data.text;
-
             if (result.length >= 4000) {
                 let idx = result.lastIndexOf(' ', 4000);
-
                 if (idx > 0) {
                     let chunk = result.substring(0, idx);
                     result = result.substring(idx+1, result.length);
-                    if (chunk) success(result);
+                    if (chunk) {
+                        success(chunk, false);
+                    }
                 }
             }
         }
     });
 
     ws.on('close', function close() {
-        if (result) success(result);
+        if (result) success(result, true);
     });
 }
 
@@ -133,10 +133,11 @@ bot.on('message', (msg) => {
 
                 sendStat('Кто то воспользовался ботом :)');
 
-                getText(fileName, function (text) {
-                    fs.unlinkSync(fileName);
-                    rimraf.sync(uPath);
-
+                getText(fileName, function (text, clear) {
+                    if (clear === true) {
+                        fs.unlinkSync(fileName);
+                        rimraf.sync(uPath);
+                    }
 
                     if (!text.trim()) {
                         bot.sendMessage(chatId, 'К сожалению я не смог ни чего разобрать в этой аудио записи');
